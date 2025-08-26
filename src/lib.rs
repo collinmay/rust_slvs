@@ -221,6 +221,8 @@ match result {
 ```
 */
 
+#![allow(warnings)]
+
 pub mod constraint;
 pub mod entity;
 pub mod group;

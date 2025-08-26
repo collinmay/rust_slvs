@@ -74,7 +74,7 @@ pub struct System {
     /// Sets whether the solver tries to figure out what constraints failed, which can
     /// be a relatively slow process.
     pub calculate_faileds: bool,
-    pub(crate) dragged: [Slvs_hParam; 4],
+    pub dragged: Vec<Slvs_hParam>,
 }
 
 impl System {
@@ -85,7 +85,7 @@ impl System {
             entities: Elements::new(),
             constraints: Elements::new(),
             calculate_faileds: true,
-            dragged: [0; 4],
+            dragged: Vec::new(),
         }
     }
 }
@@ -775,7 +775,7 @@ impl System {
             SLVS_E_POINT_IN_2D | SLVS_E_POINT_IN_3D => slvs_entity.param,
             SLVS_E_WORKPLANE => self.slvs_entity(slvs_entity.normal)?.param,
             _ => panic!("Unknown Slvs_Entity type value {}", slvs_entity.type_),
-        };
+        }.to_vec();
 
         Ok(())
     }
@@ -784,7 +784,7 @@ impl System {
     ///
     /// See [`System::set_dragged`] for more information.
     pub fn clear_dragged(&mut self) {
-        self.dragged = [0; 4];
+        self.dragged = Vec::new();
     }
 
     /// Solve the geometric constraint.

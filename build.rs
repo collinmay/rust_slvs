@@ -2,7 +2,6 @@ use std::env;
 use std::path::PathBuf;
 
 extern crate bindgen;
-use bindgen::CargoCallbacks;
 use dunce::canonicalize;
 
 fn main() {
@@ -57,7 +56,7 @@ fn main() {
                 "src/constrainteq.cpp",
                 "src/system.cpp",
                 "src/platform/platform.cpp",
-                "src/lib.cpp",
+                "src/slvs/lib.cpp",
             ]
             .map(|file| libdir_path.join(PathBuf::from(file))),
         )
@@ -72,20 +71,22 @@ fn main() {
         .include(libdir_path.join(PathBuf::from("extlib/mimalloc/include")))
         .files(
             [
-                "extlib/mimalloc/src/stats.c",
-                "extlib/mimalloc/src/random.c",
-                "extlib/mimalloc/src/os.c",
-                "extlib/mimalloc/src/bitmap.c",
-                "extlib/mimalloc/src/arena.c",
-                "extlib/mimalloc/src/segment-cache.c",
-                "extlib/mimalloc/src/segment.c",
-                "extlib/mimalloc/src/page.c",
                 "extlib/mimalloc/src/alloc.c",
                 "extlib/mimalloc/src/alloc-aligned.c",
                 "extlib/mimalloc/src/alloc-posix.c",
+                "extlib/mimalloc/src/arena.c",
+                "extlib/mimalloc/src/bitmap.c",
                 "extlib/mimalloc/src/heap.c",
-                "extlib/mimalloc/src/options.c",
                 "extlib/mimalloc/src/init.c",
+                "extlib/mimalloc/src/libc.c",
+                "extlib/mimalloc/src/options.c",
+                "extlib/mimalloc/src/os.c",
+                "extlib/mimalloc/src/page.c",
+                "extlib/mimalloc/src/random.c",
+                "extlib/mimalloc/src/segment.c",
+                "extlib/mimalloc/src/segment-map.c",
+                "extlib/mimalloc/src/stats.c",
+                "extlib/mimalloc/src/prim/prim.c",
             ]
             .map(|file| libdir_path.join(PathBuf::from(file))),
         )
@@ -107,7 +108,7 @@ fn main() {
         .clang_arg("c++")
         .clang_arg("-std=c++11")
         .clang_arg("-fvisibility=default")
-        .parse_callbacks(Box::new(CargoCallbacks))
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         .generate()
         .expect("Unable to generate bindings");
 
